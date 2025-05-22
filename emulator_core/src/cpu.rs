@@ -1,3 +1,5 @@
+use crate::memory::Memory;
+
 pub struct CPU {
     pub a: u8,
     pub b: u8,
@@ -29,7 +31,25 @@ impl CPU {
 
     pub fn debug(&self) {
         println!("CPU Registers:");
-        println!("A:{:02X} B:{:02X} C:{:02X} D:{:02X} E:{:02X} F:{:02X} H:{:02X} L:{:02X}", self.a, self.b, self.c, self.d, self.e, self.f, self.h, self.l);
+        println!(
+            "A:{:02X} B:{:02X} C:{:02X} D:{:02X} E:{:02X} F:{:02X} H:{:02X} L:{:02X}",
+            self.a, self.b, self.c, self.d, self.e, self.f, self.h, self.l
+        );
         println!("PC:{:04X} SP:{:04X}", self.pc, self.sp);
+    }
+
+    pub fn step(&mut self, mem: &Memory) {
+        let opcode = mem.read_byte(self.pc);
+        println!("Executing opcode: {:02X} at PC: {:04X}", opcode, self.pc);
+
+        match opcode {
+            0x00 => { // NOP
+                self.pc += 1;
+            }
+            _ => {
+                println!("Unknown opcode: {:02X}", opcode);
+                self.pc += 1;
+            }
+        }
     }
 }
