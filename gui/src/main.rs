@@ -25,7 +25,7 @@ fn main() {
         for y in 0..HEIGHT {
             for x in 0..WIDTH {
                 let addr = 0x8000 + (y * WIDTH + x) % 0x2000;
-                let val = mem.read_byte(addr);
+                let val = mem.read_byte(addr as u16);
                 let color = match val {
                     0 => 0xFF_FF_FF,
                     1..=63 => 0xAA_AA_AA,
@@ -35,6 +35,11 @@ fn main() {
                 pixels[y * WIDTH + x] = color;
             }
         }
+
+        window.update_with_buffer(&pixels, WIDTH, HEIGHT).unwrap();
+    }
+}
+
 
         window.update_with_buffer(&pixels, WIDTH, HEIGHT).unwrap();
     }
