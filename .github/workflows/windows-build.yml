@@ -1,0 +1,28 @@
+name: Build BushBoy Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Build BushBoy executable
+        run: cargo build --release
+
+      - name: Upload BushBoy exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: BushBoy-exe
+          path: target/release/*.exe
