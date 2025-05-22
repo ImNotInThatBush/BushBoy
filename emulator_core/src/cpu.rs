@@ -80,6 +80,12 @@ impl CPU {
                 println!("LD DE, ${:02X}{:02X}", self.d, self.e);
                 self.pc += 3;
             }
+            0x18 => {
+                let offset = mem.read_byte(self.pc + 1) as i8;
+                let old_pc = self.pc;
+                self.pc = self.pc.wrapping_add(2).wrapping_add(offset as u16);
+                println!("JR {} -> PC = {:04X}", offset, self.pc);
+            }
             0x21 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
