@@ -63,6 +63,14 @@ impl CPU {
                 println!("LD DE, ${:02X}{:02X}", self.d, self.e);
                 self.pc += 3;
             }
+            0x21 => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                self.l = lo;
+                self.h = hi;
+                println!("LD HL, ${:02X}{:02X}", self.h, self.l);
+                self.pc += 3;
+            }
             0x31 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
