@@ -1,3 +1,6 @@
+pub mod cpu;
+pub mod memory;
+
 pub struct Emulator;
 
 impl Emulator {
