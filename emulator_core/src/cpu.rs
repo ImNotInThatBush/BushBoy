@@ -115,6 +115,15 @@ impl CPU {
                 println!("LD (HL), A -> ${:04X} = {:02X}", addr, self.a);
                 self.pc += 1;
             }
+            0xAF => {
+                self.a ^= self.a;
+                self.set_flag(7, self.a == 0); // Z
+                self.set_flag(6, false);       // N
+                self.set_flag(5, false);       // H
+                self.set_flag(4, false);       // C
+                println!("XOR A -> A = 00");
+                self.pc += 1;
+            }
             0xEA => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
