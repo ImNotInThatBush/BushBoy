@@ -66,9 +66,9 @@ impl CPU {
             0x04 => {
                 let prev = self.b;
                 self.b = self.b.wrapping_add(1);
-                self.set_flag(7, self.b == 0);                     // Z
-                self.set_flag(6, false);                           // N
-                self.set_flag(5, (prev & 0x0F) + 1 > 0x0F);        // H
+                self.set_flag(7, self.b == 0);
+                self.set_flag(6, false);
+                self.set_flag(5, (prev & 0x0F) + 1 > 0x0F);
                 println!("INC B -> {:02X}", self.b);
                 self.pc += 1;
             }
@@ -116,6 +116,14 @@ impl CPU {
                 let addr = ((hi as u16) << 8) | lo as u16;
                 mem.write_byte(addr, self.a);
                 println!("LD (${:04X}), A -> Wrote {:02X}", addr, self.a);
+                self.pc += 3;
+            }
+            0xFA => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                let addr = ((hi as u16) << 8) | lo as u16;
+                self.a = mem.read_byte(addr);
+                println!("LD A, (${:04X}) -> {:02X}", addr, self.a);
                 self.pc += 3;
             }
             0xC3 => {
