@@ -1,18 +1,18 @@
-use emulator_core::Emulator;
-use minifb::{Key, Window, WindowOptions};
+use std::fs::File;
+use std::io::Read;
+
+use emulator_core::{cpu::Cpu, memory::Memory};
 
 fn main() {
-    let mut emulator = Emulator::new();
-    let mut window = Window::new("BushBoy Emulator", 160, 144, WindowOptions::default())
-        .expect("Unable to open Window");
+    let rom_path = "../snake.gb";
 
-    while window.is_open() {
-        let keys = window.get_keys();
-        emulator.handle_keys(&keys);
+    let mut file = File::open(rom_path).expect("Failed to open ROM file");
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer).expect("Failed to read ROM");
 
-        let buffer = emulator.get_frame_buffer();
-        window
-            .update_with_buffer(&buffer, 160, 144)
-            .expect("Failed to update window");
-    }
+    let mut memory = Memory::new();
+    memory.load_rom(&buffer);
+
+    let mut cpu = Cpu::new();
+    cpu.run(&mut memory);
 }
