@@ -1,7 +1,10 @@
-name: Build BushBoy Windows
+name: Build and Release BushBoy Windows
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -21,8 +24,28 @@ jobs:
       - name: Build BushBoy executable
         run: cargo build --release
 
-      - name: Upload BushBoy exe
+      - name: Upload BushBoy exe as artifact
         uses: actions/upload-artifact@v4
         with:
           name: BushBoy-exe
           path: target/release/*.exe
+
+      - name: Create Release and upload exe
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: Automated release by GitHub Actions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload exe to Release
+        uses: softprops/action-gh-release-upload@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          asset_path: target/release/BushBoy.exe
+          asset_name: BushBoy.exe
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
