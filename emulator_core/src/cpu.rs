@@ -104,6 +104,12 @@ impl CPU {
                 println!("LD A, (HL+) from ${:04X} = {:02X}", addr, self.a);
                 self.pc += 1;
             }
+            0x77 => {
+                let addr = ((self.h as u16) << 8) | self.l as u16;
+                mem.write_byte(addr, self.a);
+                println!("LD (HL), A -> ${:04X} = {:02X}", addr, self.a);
+                self.pc += 1;
+            }
             0xEA => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
