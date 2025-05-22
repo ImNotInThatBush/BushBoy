@@ -133,6 +133,13 @@ impl CPU {
                 println!("LD (${:04X}), A -> {:02X}", addr, self.a);
                 self.pc += 2;
             }
+            0xF0 => {
+                let offset = mem.read_byte(self.pc + 1);
+                let addr = 0xFF00 + offset as u16;
+                self.a = mem.read_byte(addr);
+                println!("LD A, (${:04X}) -> {:02X}", addr, self.a);
+                self.pc += 2;
+            }
             0xC3 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
@@ -165,10 +172,3 @@ impl CPU {
             }
         }
     }
-
-    pub fn run(&mut self, mem: &mut Memory, steps: usize) {
-        for _ in 0..steps {
-            self.step(mem);
-        }
-    }
-}
