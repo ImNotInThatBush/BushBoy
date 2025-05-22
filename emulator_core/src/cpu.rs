@@ -85,6 +85,16 @@ impl CPU {
                 self.pc = self.pc.wrapping_add(2).wrapping_add(offset as u16);
                 println!("JR {} -> PC = {:04X}", offset, self.pc);
             }
+            0x20 => {
+                let offset = mem.read_byte(self.pc + 1) as i8;
+                if (self.f & 0x80) == 0 {
+                    self.pc = self.pc.wrapping_add(2).wrapping_add(offset as u16);
+                    println!("JR NZ, {} -> jumped to {:04X}", offset, self.pc);
+                } else {
+                    println!("JR NZ, {} -> no jump", offset);
+                    self.pc += 2;
+                }
+            }
             0x21 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
@@ -117,10 +127,10 @@ impl CPU {
             }
             0xAF => {
                 self.a ^= self.a;
-                self.set_flag(7, self.a == 0); // Z
-                self.set_flag(6, false);       // N
-                self.set_flag(5, false);       // H
-                self.set_flag(4, false);       // C
+                self.set_flag(7, self.a == 0);
+                self.set_flag(6, false);
+                self.set_flag(5, false);
+                self.set_flag(4, false);
                 println!("XOR A -> A = 00");
                 self.pc += 1;
             }
@@ -157,10 +167,10 @@ impl CPU {
             0xE6 => {
                 let value = mem.read_byte(self.pc + 1);
                 self.a &= value;
-                self.set_flag(7, self.a == 0); // Z
-                self.set_flag(6, false);       // N
-                self.set_flag(5, true);        // H
-                self.set_flag(4, false);       // C
+                self.set_flag(7, self.a == 0);
+                self.set_flag(6, false);
+                self.set_flag(5, true);
+                self.set_flag(4, false);
                 println!("AND {:02X} -> A = {:02X}", value, self.a);
                 self.pc += 2;
             }
