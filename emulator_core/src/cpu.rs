@@ -82,7 +82,6 @@ impl CPU {
             }
             0x18 => {
                 let offset = mem.read_byte(self.pc + 1) as i8;
-                let old_pc = self.pc;
                 self.pc = self.pc.wrapping_add(2).wrapping_add(offset as u16);
                 println!("JR {} -> PC = {:04X}", offset, self.pc);
             }
@@ -94,13 +93,6 @@ impl CPU {
                 println!("LD HL, ${:02X}{:02X}", self.h, self.l);
                 self.pc += 3;
             }
-            0x31 => {
-                let lo = mem.read_byte(self.pc + 1);
-                let hi = mem.read_byte(self.pc + 2);
-                self.sp = ((hi as u16) << 8) | lo as u16;
-                println!("LD SP, ${:04X}", self.sp);
-                self.pc += 3;
-            }
             0x2A => {
                 let addr = ((self.h as u16) << 8) | self.l as u16;
                 self.a = mem.read_byte(addr);
@@ -109,6 +101,13 @@ impl CPU {
                 self.l = hl as u8;
                 println!("LD A, (HL+) from ${:04X} = {:02X}", addr, self.a);
                 self.pc += 1;
+            }
+            0x31 => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                self.sp = ((hi as u16) << 8) | lo as u16;
+                println!("LD SP, ${:04X}", self.sp);
+                self.pc += 3;
             }
             0x77 => {
                 let addr = ((self.h as u16) << 8) | self.l as u16;
@@ -144,6 +143,16 @@ impl CPU {
                 let addr = 0xFF00 + offset as u16;
                 self.a = mem.read_byte(addr);
                 println!("LD A, (${:04X}) -> {:02X}", addr, self.a);
+                self.pc += 2;
+            }
+            0xFE => {
+                let value = mem.read_byte(self.pc + 1);
+                let result = self.a.wrapping_sub(value);
+                self.set_flag(7, result == 0); // Z
+                self.set_flag(6, true);        // N
+                self.set_flag(5, (self.a & 0x0F) < (value & 0x0F)); // H
+                self.set_flag(4, self.a < value); // C
+                println!("CP {:02X} -> result = {:02X}", value, result);
                 self.pc += 2;
             }
             0xC3 => {
