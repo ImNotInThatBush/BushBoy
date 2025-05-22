@@ -25,6 +25,8 @@ fn main() {
     let mut screen_buffer = vec![0u32; width * height];
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
+        let keys = window.get_keys();
+        emulator.handle_keys(&keys);
         emulator.tick();
         emulator.render(&mut screen_buffer);
         window
@@ -32,3 +34,4 @@ fn main() {
             .expect("Failed to update window");
     }
 }
+
