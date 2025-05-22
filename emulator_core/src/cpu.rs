@@ -121,6 +121,14 @@ impl CPU {
                 println!("CALL ${:04X} (return to ${:04X})", addr, return_addr);
                 self.pc = addr;
             }
+            0xC9 => {
+                let lo = mem.read_byte(self.sp);
+                let hi = mem.read_byte(self.sp + 1);
+                self.sp += 2;
+                let addr = ((hi as u16) << 8) | lo as u16;
+                println!("RET to ${:04X}", addr);
+                self.pc = addr;
+            }
             _ => {
                 println!("Unknown opcode: {:02X}", opcode);
                 self.pc += 1;
