@@ -38,7 +38,7 @@ impl CPU {
         println!("PC:{:04X} SP:{:04X}", self.pc, self.sp);
     }
 
-    pub fn step(&mut self, mem: &Memory) {
+    pub fn step(&mut self, mem: &mut Memory) {
         let opcode = mem.read_byte(self.pc);
         println!("Executing opcode: {:02X} at PC: {:04X}", opcode, self.pc);
 
@@ -78,6 +78,14 @@ impl CPU {
                 println!("LD SP, ${:04X}", self.sp);
                 self.pc += 3;
             }
+            0xEA => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                let addr = ((hi as u16) << 8) | lo as u16;
+                mem.write_byte(addr, self.a);
+                println!("LD (${:04X}), A -> Wrote {:02X}", addr, self.a);
+                self.pc += 3;
+            }
             0xC3 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
@@ -92,9 +100,4 @@ impl CPU {
         }
     }
 
-    pub fn run(&mut self, mem: &Memory, steps: usize) {
-        for _ in 0..steps {
-            self.step(mem);
-        }
-    }
-}
+    pub fn run(&mut self, mem: &mut Memory, step
