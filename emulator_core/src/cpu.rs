@@ -110,6 +110,17 @@ impl CPU {
                 println!("JP ${:04X}", addr);
                 self.pc = addr;
             }
+            0xCD => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                let addr = ((hi as u16) << 8) | lo as u16;
+                let return_addr = self.pc + 3;
+                self.sp -= 2;
+                mem.write_byte(self.sp, (return_addr & 0xFF) as u8);         // low byte
+                mem.write_byte(self.sp + 1, (return_addr >> 8) as u8);       // high byte
+                println!("CALL ${:04X} (return to ${:04X})", addr, return_addr);
+                self.pc = addr;
+            }
             _ => {
                 println!("Unknown opcode: {:02X}", opcode);
                 self.pc += 1;
