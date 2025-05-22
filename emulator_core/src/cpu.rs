@@ -6,7 +6,7 @@ pub struct CPU {
     pub c: u8,
     pub d: u8,
     pub e: u8,
-    pub f: u8, // flags: Z N H C (zero, subtract, half-carry, carry)
+    pub f: u8,
     pub h: u8,
     pub l: u8,
     pub pc: u16,
@@ -46,10 +46,6 @@ impl CPU {
         }
     }
 
-    fn get_flag(&self, bit: u8) -> bool {
-        (self.f >> bit) & 1 == 1
-    }
-
     pub fn step(&mut self, mem: &mut Memory) {
         let opcode = mem.read_byte(self.pc);
         println!("Executing opcode: {:02X} at PC: {:04X}", opcode, self.pc);
@@ -67,14 +63,8 @@ impl CPU {
                 println!("LD BC, ${:02X}{:02X}", self.b, self.c);
                 self.pc += 3;
             }
-            0x04 => { // INC B
+            0x04 => {
                 let prev = self.b;
                 self.b = self.b.wrapping_add(1);
                 self.set_flag(7, self.b == 0);                     // Z
-                self.set_flag(6, false);                           // N
-                self.set_flag(5, (prev & 0x0F) + 1 > 0x0F);        // H
-                println!("INC B -> {:02X}", self.b);
-                self.pc += 1;
-            }
-            0x11 => {
-                let lo = mem.read_byte(self.pc + 1);
+                self.set_flag(6, false);_
