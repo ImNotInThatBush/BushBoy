@@ -1,4 +1,4 @@
 fn main() {
-    let message = emulator_core::hello_bushboy();
-    println!("{}", message);
+    let cpu = emulator_core::cpu::CPU::new();
+    cpu.debug();
 }
