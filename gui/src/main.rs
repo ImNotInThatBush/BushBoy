@@ -1,27 +1,18 @@
-use minifb::{Key, Window, WindowOptions};
 use emulator_core::Emulator;
-
-const WIDTH: usize = 160;
-const HEIGHT: usize = 144;
+use minifb::{Key, Window, WindowOptions};
 
 fn main() {
-    let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
     let mut emulator = Emulator::new();
+    let mut window = Window::new("BushBoy Emulator", 160, 144, WindowOptions::default())
+        .expect("Unable to open Window");
 
-    let mut window = Window::new(
-        "BushBoy - Press ESC to exit",
-        WIDTH,
-        HEIGHT,
-        WindowOptions::default(),
-    )
-    .unwrap_or_else(|e| panic!("{}", e));
-
-    while window.is_open() && !window.is_key_down(Key::Escape) {
+    while window.is_open() {
         let keys = window.get_keys();
         emulator.handle_keys(&keys);
 
+        let buffer = emulator.get_frame_buffer();
         window
-            .update_with_buffer(&buffer, WIDTH, HEIGHT)
-            .unwrap();
+            .update_with_buffer(&buffer, 160, 144)
+            .expect("Failed to update window");
     }
 }
