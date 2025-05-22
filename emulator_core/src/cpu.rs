@@ -6,11 +6,11 @@ pub struct CPU {
     pub c: u8,
     pub d: u8,
     pub e: u8,
-    pub f: u8, // flags
+    pub f: u8,
     pub h: u8,
     pub l: u8,
-    pub pc: u16, // program counter
-    pub sp: u16, // stack pointer
+    pub pc: u16,
+    pub sp: u16,
 }
 
 impl CPU {
@@ -43,16 +43,23 @@ impl CPU {
         println!("Executing opcode: {:02X} at PC: {:04X}", opcode, self.pc);
 
         match opcode {
-            0x00 => { // NOP
+            0x00 => {
                 println!("NOP");
                 self.pc += 1;
             }
-            0x31 => { // LD SP, nn
+            0x31 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
                 self.sp = ((hi as u16) << 8) | lo as u16;
                 println!("LD SP, ${:04X}", self.sp);
                 self.pc += 3;
+            }
+            0xC3 => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                let addr = ((hi as u16) << 8) | lo as u16;
+                println!("JP ${:04X}", addr);
+                self.pc = addr;
             }
             _ => {
                 println!("Unknown opcode: {:02X}", opcode);
