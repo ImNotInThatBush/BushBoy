@@ -7,18 +7,18 @@ fn main() {
     let mut rom_data = Vec::new();
     file.read_to_end(&mut rom_data).expect("Failed to read ROM");
 
-    let mem = emulator_core::memory::Memory::new(rom_data);
+    // Memoria deve essere mutabile
+    let mut mem = emulator_core::memory::Memory::new(rom_data);
     println!("ROM loaded: {} bytes", mem.rom.len());
 
-    // Inizializza CPU
     let mut cpu = emulator_core::cpu::CPU::new();
 
     println!("--- Stato iniziale ---");
     cpu.debug();
 
-    // Esegui 10 istruzioni
+    // Passiamo &mut mem
     println!("\n--- Inizio esecuzione ---");
-    cpu.run(&mem, 10);
+    cpu.run(&mut mem, 10);
 
     println!("\n--- Stato finale ---");
     cpu.debug();
