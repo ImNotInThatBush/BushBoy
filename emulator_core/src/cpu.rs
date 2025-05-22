@@ -44,7 +44,15 @@ impl CPU {
 
         match opcode {
             0x00 => { // NOP
+                println!("NOP");
                 self.pc += 1;
+            }
+            0x31 => { // LD SP, nn
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                self.sp = ((hi as u16) << 8) | lo as u16;
+                println!("LD SP, ${:04X}", self.sp);
+                self.pc += 3;
             }
             _ => {
                 println!("Unknown opcode: {:02X}", opcode);
