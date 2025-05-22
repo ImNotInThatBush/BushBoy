@@ -52,4 +52,10 @@ impl CPU {
             }
         }
     }
+
+    pub fn run(&mut self, mem: &Memory, steps: usize) {
+        for _ in 0..steps {
+            self.step(mem);
+        }
+    }
 }
