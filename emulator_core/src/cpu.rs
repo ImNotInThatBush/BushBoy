@@ -95,6 +95,15 @@ impl CPU {
                 println!("LD SP, ${:04X}", self.sp);
                 self.pc += 3;
             }
+            0x2A => {
+                let addr = ((self.h as u16) << 8) | self.l as u16;
+                self.a = mem.read_byte(addr);
+                let hl = addr.wrapping_add(1);
+                self.h = (hl >> 8) as u8;
+                self.l = hl as u8;
+                println!("LD A, (HL+) from ${:04X} = {:02X}", addr, self.a);
+                self.pc += 1;
+            }
             0xEA => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
@@ -116,8 +125,8 @@ impl CPU {
                 let addr = ((hi as u16) << 8) | lo as u16;
                 let return_addr = self.pc + 3;
                 self.sp -= 2;
-                mem.write_byte(self.sp, (return_addr & 0xFF) as u8);         // low byte
-                mem.write_byte(self.sp + 1, (return_addr >> 8) as u8);       // high byte
+                mem.write_byte(self.sp, (return_addr & 0xFF) as u8);
+                mem.write_byte(self.sp + 1, (return_addr >> 8) as u8);
                 println!("CALL ${:04X} (return to ${:04X})", addr, return_addr);
                 self.pc = addr;
             }
