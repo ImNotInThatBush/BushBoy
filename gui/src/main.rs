@@ -7,12 +7,9 @@ fn main() {
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer).expect("Errore lettura ROM");
 
-    let mut mem = Memory::new();
-    for (i, &byte) in buffer.iter().enumerate() {
-        mem.write_byte(i as u16, byte);
-    }
-
+    let mut mem = Memory::new(buffer);
     let mut cpu = CPU::new();
+
     cpu.run(&mut mem, 500);
     cpu.debug();
 }
