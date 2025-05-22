@@ -126,6 +126,13 @@ impl CPU {
                 println!("LD A, (${:04X}) -> {:02X}", addr, self.a);
                 self.pc += 3;
             }
+            0xE0 => {
+                let offset = mem.read_byte(self.pc + 1);
+                let addr = 0xFF00 + offset as u16;
+                mem.write_byte(addr, self.a);
+                println!("LD (${:04X}), A -> {:02X}", addr, self.a);
+                self.pc += 2;
+            }
             0xC3 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
