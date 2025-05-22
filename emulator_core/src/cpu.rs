@@ -47,6 +47,14 @@ impl CPU {
                 println!("NOP");
                 self.pc += 1;
             }
+            0x01 => { // LD BC, nn
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                self.c = lo;
+                self.b = hi;
+                println!("LD BC, ${:02X}{:02X}", self.b, self.c);
+                self.pc += 3;
+            }
             0x31 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
