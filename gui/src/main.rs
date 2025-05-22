@@ -39,8 +39,3 @@ fn main() {
         window.update_with_buffer(&pixels, WIDTH, HEIGHT).unwrap();
     }
 }
-
-
-        window.update_with_buffer(&pixels, WIDTH, HEIGHT).unwrap();
-    }
-}
