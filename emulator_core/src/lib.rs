@@ -1,5 +1,4 @@
-pub mod cpu;
-pub mod memory;
+use minifb::Key;
 
 pub struct Emulator;
 
@@ -8,18 +7,21 @@ impl Emulator {
         Emulator
     }
 
+    // Fase base: stub CPU cycle (da espandere in seguito)
     pub fn tick(&mut self) {
         // TODO: implement CPU cycle
+        // Per ora stampa "tick"
+        // println!("tick"); // Decommenta per debug, commenta per uso normale
     }
 
     pub fn render(&self, buffer: &mut [u32]) {
-        // TODO: draw to screen buffer
+        // Disegna schermo tutto blu (BGR)
         for pixel in buffer.iter_mut() {
-            *pixel = 0x00_00_FF; // blu (BGR format)
+            *pixel = 0x00_00_FF;
         }
     }
 
-    pub fn handle_keys(&mut self, _keys: &Option<Vec<minifb::Key>>) {
+    pub fn handle_keys(&mut self, _keys: &Option<Vec<Key>>) {
         // TODO: handle keyboard input
     }
 }
