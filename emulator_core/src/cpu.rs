@@ -140,6 +140,18 @@ impl CPU {
                 println!("XOR A -> A = 00");
                 self.pc += 1;
             }
+            0xCA => {
+                let lo = mem.read_byte(self.pc + 1);
+                let hi = mem.read_byte(self.pc + 2);
+                let addr = ((hi as u16) << 8) | lo as u16;
+                if (self.f & 0x80) != 0 {
+                    self.pc = addr;
+                    println!("JP Z, ${:04X} (taken)", addr);
+                } else {
+                    println!("JP Z, ${:04X} (not taken)", addr);
+                    self.pc += 3;
+                }
+            }
             0xEA => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
