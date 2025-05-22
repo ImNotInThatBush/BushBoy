@@ -1,0 +1,35 @@
+pub struct CPU {
+    pub a: u8,
+    pub b: u8,
+    pub c: u8,
+    pub d: u8,
+    pub e: u8,
+    pub f: u8, // flags
+    pub h: u8,
+    pub l: u8,
+    pub pc: u16, // program counter
+    pub sp: u16, // stack pointer
+}
+
+impl CPU {
+    pub fn new() -> Self {
+        CPU {
+            a: 0,
+            b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            f: 0,
+            h: 0,
+            l: 0,
+            pc: 0x0100,
+            sp: 0xFFFE,
+        }
+    }
+
+    pub fn debug(&self) {
+        println!("CPU Registers:");
+        println!("A:{:02X} B:{:02X} C:{:02X} D:{:02X} E:{:02X} F:{:02X} H:{:02X} L:{:02X}", self.a, self.b, self.c, self.d, self.e, self.f, self.h, self.l);
+        println!("PC:{:04X} SP:{:04X}", self.pc, self.sp);
+    }
+}
