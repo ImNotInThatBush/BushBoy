@@ -72,6 +72,12 @@ impl CPU {
                 println!("INC B -> {:02X}", self.b);
                 self.pc += 1;
             }
+            0x0A => {
+                let addr = 0xFF00 + self.c as u16;
+                self.a = mem.read_byte(addr);
+                println!("LD A, (C) -> A = {:02X} from {:04X}", self.a, addr);
+                self.pc += 1;
+            }
             0x11 => {
                 let lo = mem.read_byte(self.pc + 1);
                 let hi = mem.read_byte(self.pc + 2);
