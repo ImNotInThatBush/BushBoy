@@ -21,8 +21,8 @@ fn main() {
         emulator.tick();
         emulator.render(&mut buffer);
 
-        // Passa &Option<Vec<Key>> come richiesto da handle_keys
-        let keys = window.get_keys();
+        // Avvolgi keys in Some() per match parametro
+        let keys = Some(window.get_keys());
         emulator.handle_keys(&keys);
 
         window
@@ -30,3 +30,4 @@ fn main() {
             .unwrap();
     }
 }
+
