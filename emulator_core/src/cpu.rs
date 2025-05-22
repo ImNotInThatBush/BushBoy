@@ -100,4 +100,9 @@ impl CPU {
         }
     }
 
-    pub fn run(&mut self, mem: &mut Memory, step
+    pub fn run(&mut self, mem: &mut Memory, steps: usize) {
+        for _ in 0..steps {
+            self.step(mem);
+        }
+    }
+}
