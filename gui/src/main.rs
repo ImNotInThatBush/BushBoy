@@ -20,6 +20,38 @@ fn main() {
     let mut pixels = vec![0x00_00_00; WIDTH * HEIGHT];
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
+        // Input Game Boy
+        let keys = window.get_keys().unwrap_or_else(Vec::new);
+
+        let mut joypad = 0xFF;
+
+        if keys.contains(&Key::Right) || keys.contains(&Key::D) {
+            joypad &= !(1 << 0); // Right
+        }
+        if keys.contains(&Key::Left) || keys.contains(&Key::A) {
+            joypad &= !(1 << 1); // Left
+        }
+        if keys.contains(&Key::Up) || keys.contains(&Key::W) {
+            joypad &= !(1 << 2); // Up
+        }
+        if keys.contains(&Key::Down) || keys.contains(&Key::S) {
+            joypad &= !(1 << 3); // Down
+        }
+        if keys.contains(&Key::Enter) {
+            joypad &= !(1 << 4); // Start
+        }
+        if keys.contains(&Key::Space) {
+            joypad &= !(1 << 5); // Select
+        }
+        if keys.contains(&Key::Z) {
+            joypad &= !(1 << 6); // B
+        }
+        if keys.contains(&Key::X) {
+            joypad &= !(1 << 7); // A
+        }
+
+        mem.write_byte(0xFF00, joypad);
+
         cpu.run(&mut mem, 10);
 
         for y in 0..HEIGHT {
