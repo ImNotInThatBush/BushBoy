@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 emulator_core = { path = "../emulator_core" }
+minifb = "0.25"
