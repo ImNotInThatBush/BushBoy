@@ -34,4 +34,3 @@ fn main() {
             .expect("Failed to update window");
     }
 }
-
