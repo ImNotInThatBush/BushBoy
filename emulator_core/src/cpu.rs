@@ -145,13 +145,23 @@ impl CPU {
                 println!("LD A, (${:04X}) -> {:02X}", addr, self.a);
                 self.pc += 2;
             }
+            0xE6 => {
+                let value = mem.read_byte(self.pc + 1);
+                self.a &= value;
+                self.set_flag(7, self.a == 0); // Z
+                self.set_flag(6, false);       // N
+                self.set_flag(5, true);        // H
+                self.set_flag(4, false);       // C
+                println!("AND {:02X} -> A = {:02X}", value, self.a);
+                self.pc += 2;
+            }
             0xFE => {
                 let value = mem.read_byte(self.pc + 1);
                 let result = self.a.wrapping_sub(value);
-                self.set_flag(7, result == 0); // Z
-                self.set_flag(6, true);        // N
-                self.set_flag(5, (self.a & 0x0F) < (value & 0x0F)); // H
-                self.set_flag(4, self.a < value); // C
+                self.set_flag(7, result == 0);
+                self.set_flag(6, true);
+                self.set_flag(5, (self.a & 0x0F) < (value & 0x0F));
+                self.set_flag(4, self.a < value);
                 println!("CP {:02X} -> result = {:02X}", value, result);
                 self.pc += 2;
             }
