@@ -17,7 +17,7 @@ fn main() {
     });
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        let keys = window.get_keys().unwrap_or_else(|| Vec::new());
+        let keys = window.get_keys();
 
         for key in &keys {
             match key {
